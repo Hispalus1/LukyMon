@@ -1,3 +1,6 @@
+using log4net;
+using log4net.Repository.Hierarchy;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -43,6 +46,16 @@ namespace LukyMon
                 {
                     RestoreActiveMinions();
                     activeMinionIDs.Clear();
+                }
+                else
+                {
+                    // player is null, do nothing or handle the error
+                    // Here, we can log the error or throw an exception to indicate that the player instance is not available
+                    // For example, we can log the error using log4net
+                    var logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+                    logger.Error("Player instance is null in MyPlayerXD.PostUpdate");
+                    // Alternatively, we can throw an exception
+                    // throw new Exception("Player instance is null in MyPlayerXD.PostUpdate");
                 }
             }
         }
