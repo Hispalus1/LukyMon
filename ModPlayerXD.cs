@@ -10,7 +10,7 @@ namespace MyMod
         private List<int> activeMinionIDs = new List<int>();
         private FieldInfo minionsField;
         private FieldInfo minionSlotsTakenField;
-
+        private readonly object playerLock = new object();
         private Player player; // new field to hold the player instance
 
         public override void Load()
@@ -20,41 +20,53 @@ namespace MyMod
             minionSlotsTakenField = typeof(Player).GetField("_minionSlotsTaken", BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
+        
+        
+
         public override void OnEnterWorld(Player player)
         {
-            this.player = player;
-        }
-
-        private void RestoreActiveMinions()
-        {
-            if (player != null)
+            lock (playerLock)
             {
-                for (int i = 0; i < activeMinionIDs.Count; i++)
-                {
-                    int minionID = activeMinionIDs[i];
-                    int minionSlot = GetEmptyMinionSlot();
-                    if (minionSlot != -1)
-                    {
-                        SetMinionSlotTaken(minionSlot, true);
-                        Projectile minion = new Projectile();
-                        minion.SetDefaults(minionID);
-                        minion.owner = player.whoAmI;
-                        SetMinionAtSlot(minionSlot, minion);
-                    }
-                }
+                this.player = player;
             }
         }
 
         public override void PostUpdate()
         {
-            if (player != null && !player.dead)
+            lock (playerLock)
             {
-                activeMinionIDs = GetActiveMinionIDs();
+                if (player != null && !player.dead)
+                {
+                    activeMinionIDs = GetActiveMinionIDs();
+                }
+                else if (player != null)
+                {
+                    RestoreActiveMinions();
+                    activeMinionIDs.Clear();
+                }
             }
-            else if (player != null)
+        }
+
+        private void RestoreActiveMinions()
+        {
+            lock (playerLock)
             {
-                RestoreActiveMinions();
-                activeMinionIDs.Clear();
+                if (player != null)
+                {
+                    for (int i = 0; i < activeMinionIDs.Count; i++)
+                    {
+                        int minionID = activeMinionIDs[i];
+                        int minionSlot = GetEmptyMinionSlot();
+                        if (minionSlot != -1)
+                        {
+                            SetMinionSlotTaken(minionSlot, true);
+                            Projectile minion = new Projectile();
+                            minion.SetDefaults(minionID);
+                            minion.owner = player.whoAmI;
+                            SetMinionAtSlot(minionSlot, minion);
+                        }
+                    }
+                }
             }
         }
 
