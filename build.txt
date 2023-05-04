@@ -1,0 +1,3 @@
+displayName = LukyMon
+author = Yami
+version = 0.2

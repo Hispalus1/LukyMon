@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "9+8GEAARq2OF95dNbxXZJ4r+rBkSgk0RdmXJNZp5fZiSrWpw+lt1cnCsFLzQQy886ol56aiMDAoziew+x06Jow==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Hispalus\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LukyMon\\LukyMon.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Hispalus\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
+  ],
+  "logs": []
+}
