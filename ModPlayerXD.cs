@@ -3,7 +3,7 @@ using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace MyMod
+namespace LukyMon
 {
     public class MyPlayerXD : ModPlayer
     {
