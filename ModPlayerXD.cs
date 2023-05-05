@@ -15,6 +15,7 @@ namespace LukyMon
         private readonly object playerLock = new object();
         private Player player; // new field to hold the player instance
         private int maxMinions;
+        private bool shouldRestoreMinions = false;
 
         public override void Load()
         {
@@ -33,6 +34,7 @@ namespace LukyMon
                 {
                     this.player = player;
                     maxMinions = player.maxMinions;
+                    shouldRestoreMinions = true;
                 }
             }
         }
@@ -49,17 +51,35 @@ namespace LukyMon
                     }
                     else
                     {
-                        RestoreActiveMinions();
                         activeMinionIDs.Clear();
                     }
+
+                    if (shouldRestoreMinions)
+                    {
+                        RestoreActiveMinions();
+                        shouldRestoreMinions = false;
+                    }
                 }
+            }
+        }
+
+        public override void OnRespawn(Player player)
+        {
+            LogManager.GetLogger("LukyMon").Info("Spawn!");
+            lock (playerLock)
+            {
+                this.player = player;
+                maxMinions = player.maxMinions;
+                shouldRestoreMinions = true;
             }
         }
 
         private void RestoreActiveMinions()
         {
             lock (playerLock)
+
             {
+
                 if (player == null)
                 {
                     return;
@@ -77,11 +97,14 @@ namespace LukyMon
                         SetMinionAtSlot(minionSlot, minion);
                     }
                 }
+                LogManager.GetLogger("LukyMon").Info("Restore!");
             }
         }
 
+
         private List<int> GetActiveMinionIDs()
         {
+            LogManager.GetLogger("LukyMon").Info("Get!");
             List<int> activeIDs = new List<int>();
             if (player != null && minionSlotsTakenField != null)
             {
@@ -146,7 +169,7 @@ namespace LukyMon
                     {
                         if (!slotsTaken[i])
                         {
-                            LogManager.GetLogger("LukyMon").Info("Mod is running!");
+                            LogManager.GetLogger("LukyMon").Info("get");
                             return i;
                         }
                     }
