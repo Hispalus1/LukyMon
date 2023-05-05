@@ -21,42 +21,40 @@ namespace LukyMon
             player = Main.LocalPlayer;
             minionsField = typeof(Player).GetField("_minions", BindingFlags.Instance | BindingFlags.NonPublic);
             minionSlotsTakenField = typeof(Player).GetField("_minionSlotsTaken", BindingFlags.Instance | BindingFlags.NonPublic);
+            LogManager.GetLogger("LukyMon").Info("Mod is running!");
         }
-
-        
-        
 
         public override void OnEnterWorld(Player player)
         {
-            lock (playerLock)
+            if (player != null)
             {
-                this.player = player;
+                lock (playerLock)
+                {
+                    this.player = player;
+                }
             }
         }
 
         public override void PostUpdate()
         {
+            
             lock (playerLock)
             {
-                if (player != null && !player.dead)
+                if (player == null)
+                {
+                    return;
+                }
+
+                if (!player.dead)
                 {
                     activeMinionIDs = GetActiveMinionIDs();
                 }
-                else if (player != null)
+                else
                 {
                     RestoreActiveMinions();
                     activeMinionIDs.Clear();
                 }
-                else
-                {
-                    // player is null, do nothing or handle the error
-                    // Here, we can log the error or throw an exception to indicate that the player instance is not available
-                    // For example, we can log the error using log4net
-                    var logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-                    logger.Error("Player instance is null in MyPlayerXD.PostUpdate");
-                    // Alternatively, we can throw an exception
-                    // throw new Exception("Player instance is null in MyPlayerXD.PostUpdate");
-                }
+                
             }
         }
 
@@ -64,8 +62,11 @@ namespace LukyMon
         {
             lock (playerLock)
             {
-                if (player != null)
+                if (player == null)
                 {
+                    return;
+                }
+                if (player != null) { 
                     for (int i = 0; i < activeMinionIDs.Count; i++)
                     {
                         int minionID = activeMinionIDs[i];
@@ -79,68 +80,82 @@ namespace LukyMon
                             SetMinionAtSlot(minionSlot, minion);
                         }
                     }
-                }
-            }
+            }   }
         }
 
         private List<int> GetActiveMinionIDs()
         {
             List<int> activeIDs = new List<int>();
-            if (player != null)
+            if (player != null && minionSlotsTakenField != null)
             {
                 Projectile[] minions = (Projectile[])minionsField.GetValue(player);
                 bool[] slotsTaken = (bool[])minionSlotsTakenField.GetValue(player);
-
-                for (int i = 0; i < minions.Length; i++)
+                
+                if (minions != null && slotsTaken != null)
                 {
-                    if (minions[i].active && minions[i].owner == player.whoAmI)
+                    for (int i = 0; i < minions.Length; i++)
                     {
-                        activeIDs.Add(minions[i].type);
-                        slotsTaken[i] = true;
+                        if (minions[i] != null && minions[i].active && minions[i].owner == player.whoAmI)
+                        {
+                            activeIDs.Add(minions[i].type);
+                            slotsTaken[i] = true;
+                        }
+                        else
+                        {
+                            slotsTaken[i] = false;
+                        }
                     }
-                    else
-                    {
-                        slotsTaken[i] = false;
-                    }
-                }
+                    
 
-                minionSlotsTakenField.SetValue(player, slotsTaken);
+                    minionSlotsTakenField.SetValue(player, slotsTaken);
+                }
             }
             return activeIDs;
+            
         }
 
         private void SetMinionAtSlot(int slot, Projectile minion)
         {
-            Projectile[] minions = (Projectile[])minionsField.GetValue(player);
-            if (minions != null && slot < minions.Length && player != null)
+            if (player != null && minionsField != null && minionSlotsTakenField != null)
             {
-                minions[slot] = minion;
-                minionsField.SetValue(player, minions);
+                Projectile[] minions = (Projectile[])minionsField.GetValue(player);
+                if (minions != null && slot < minions.Length)
+                {
+                    minions[slot] = minion;
+                    minionsField.SetValue(player, minions);
+                }
             }
         }
 
         private void SetMinionSlotTaken(int slot, bool taken)
         {
-            bool[] slotsTaken = (bool[])minionSlotsTakenField.GetValue(player);
-            if (slotsTaken != null && slot < slotsTaken.Length && player != null)
+            if (player != null && minionsField != null && minionSlotsTakenField != null)
             {
-                slotsTaken[slot] = taken;
-                minionSlotsTakenField.SetValue(player, slotsTaken);
+                bool[] slotsTaken = (bool[])minionSlotsTakenField.GetValue(player);
+                if (slotsTaken != null && slot < slotsTaken.Length)
+                {
+                    slotsTaken[slot] = taken;
+                    minionSlotsTakenField.SetValue(player, slotsTaken);
+                }
             }
         }
 
         private int GetEmptyMinionSlot()
         {
-            if (player != null)
+            if (player != null && minionsField != null && minionSlotsTakenField != null)
             {
                 Projectile[] minions = (Projectile[])minionsField.GetValue(player);
                 bool[] slotsTaken = (bool[])minionSlotsTakenField.GetValue(player);
 
-                for (int i = 0; i < minions.Length; i++)
+                if (minions != null && slotsTaken != null)
                 {
-                    if (!slotsTaken[i])
+                    for (int i = 0; i < minions.Length; i++)
                     {
-                        return i;
+                        if (!slotsTaken[i])
+                        {
+                            LogManager.GetLogger("LukyMon").Info("Mod is running!");
+                            return i;
+                        }
                     }
                 }
             }
