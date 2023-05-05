@@ -104,7 +104,7 @@ namespace LukyMon
 
         private List<int> GetActiveMinionIDs()
         {
-            LogManager.GetLogger("LukyMon").Info("Get!");
+            
             List<int> activeIDs = new List<int>();
             if (player != null && minionSlotsTakenField != null)
             {
@@ -132,6 +132,7 @@ namespace LukyMon
 
         private void SetMinionAtSlot(int slot, Projectile minion)
         {
+            LogManager.GetLogger("LukyMon").Info("SetSlot!");
             if (player != null && minionsField != null && minionSlotsTakenField != null)
             {
                 Projectile[] minions = (Projectile[])minionsField.GetValue(player);
@@ -145,6 +146,7 @@ namespace LukyMon
 
         private void SetMinionSlotTaken(int slot, bool taken)
         {
+            LogManager.GetLogger("LukyMon").Info("SetSlotTaken!");
             if (player != null && minionsField != null && minionSlotsTakenField != null)
             {
                 bool[] slotsTaken = (bool[])minionSlotsTakenField.GetValue(player);
@@ -158,6 +160,7 @@ namespace LukyMon
 
         private int GetEmptyMinionSlot()
         {
+            LogManager.GetLogger("LukyMon").Info("Get!");
             if (player != null && minionsField != null && minionSlotsTakenField != null)
             {
                 Projectile[] minions = (Projectile[])minionsField.GetValue(player);
@@ -169,7 +172,7 @@ namespace LukyMon
                     {
                         if (!slotsTaken[i])
                         {
-                            LogManager.GetLogger("LukyMon").Info("get");
+                            
                             return i;
                         }
                     }
