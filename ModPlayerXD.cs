@@ -1,5 +1,4 @@
 using log4net;
-using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,12 +14,14 @@ namespace LukyMon
         private FieldInfo minionSlotsTakenField;
         private readonly object playerLock = new object();
         private Player player; // new field to hold the player instance
+        private int maxMinions;
 
         public override void Load()
         {
             player = Main.LocalPlayer;
             minionsField = typeof(Player).GetField("_minions", BindingFlags.Instance | BindingFlags.NonPublic);
             minionSlotsTakenField = typeof(Player).GetField("_minionSlotsTaken", BindingFlags.Instance | BindingFlags.NonPublic);
+            maxMinions = player.maxMinions;
             LogManager.GetLogger("LukyMon").Info("Mod is running!");
         }
 
@@ -31,30 +32,27 @@ namespace LukyMon
                 lock (playerLock)
                 {
                     this.player = player;
+                    maxMinions = player.maxMinions;
                 }
             }
         }
 
         public override void PostUpdate()
         {
-            
             lock (playerLock)
             {
-                if (player == null)
+                if (player != null)
                 {
-                    return;
+                    if (!player.dead)
+                    {
+                        activeMinionIDs = GetActiveMinionIDs();
+                    }
+                    else
+                    {
+                        RestoreActiveMinions();
+                        activeMinionIDs.Clear();
+                    }
                 }
-
-                if (!player.dead)
-                {
-                    activeMinionIDs = GetActiveMinionIDs();
-                }
-                else
-                {
-                    RestoreActiveMinions();
-                    activeMinionIDs.Clear();
-                }
-                
             }
         }
 
@@ -66,21 +64,20 @@ namespace LukyMon
                 {
                     return;
                 }
-                if (player != null) { 
-                    for (int i = 0; i < activeMinionIDs.Count; i++)
+                for (int i = 0; i < activeMinionIDs.Count; i++)
+                {
+                    int minionID = activeMinionIDs[i];
+                    int minionSlot = GetEmptyMinionSlot();
+                    if (minionSlot != -1)
                     {
-                        int minionID = activeMinionIDs[i];
-                        int minionSlot = GetEmptyMinionSlot();
-                        if (minionSlot != -1)
-                        {
-                            SetMinionSlotTaken(minionSlot, true);
-                            Projectile minion = new Projectile();
-                            minion.SetDefaults(minionID);
-                            minion.owner = player.whoAmI;
-                            SetMinionAtSlot(minionSlot, minion);
-                        }
+                        SetMinionSlotTaken(minionSlot, true);
+                        Projectile minion = new Projectile();
+                        minion.SetDefaults(minionID);
+                        minion.owner = player.whoAmI;
+                        SetMinionAtSlot(minionSlot, minion);
                     }
-            }   }
+                }
+            }
         }
 
         private List<int> GetActiveMinionIDs()
@@ -90,7 +87,6 @@ namespace LukyMon
             {
                 Projectile[] minions = (Projectile[])minionsField.GetValue(player);
                 bool[] slotsTaken = (bool[])minionSlotsTakenField.GetValue(player);
-                
                 if (minions != null && slotsTaken != null)
                 {
                     for (int i = 0; i < minions.Length; i++)
@@ -105,13 +101,10 @@ namespace LukyMon
                             slotsTaken[i] = false;
                         }
                     }
-                    
-
                     minionSlotsTakenField.SetValue(player, slotsTaken);
                 }
             }
             return activeIDs;
-            
         }
 
         private void SetMinionAtSlot(int slot, Projectile minion)
