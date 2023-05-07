@@ -5,6 +5,8 @@ using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 
+
+//should work
 namespace LukyMon
 {
     public class MyPlayerXD : ModPlayer
