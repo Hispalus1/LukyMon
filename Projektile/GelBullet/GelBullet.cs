@@ -56,7 +56,7 @@ namespace LukyMon.Projektile.GelBullet
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            bounce ++;
+            bounce++;
             SoundEngine.PlaySound(SoundID.Dig.WithVolumeScale(0.5f).WithPitchOffset(0.8f), Projectile.position);
             for (var i = 0; i < 6; i++)
             {
