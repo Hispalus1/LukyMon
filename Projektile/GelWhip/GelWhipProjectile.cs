@@ -6,6 +6,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+// just for commit
 namespace LukyMon.Projektile.GelWhip
 {
     public class GelWhipProjectile : ModProjectile
