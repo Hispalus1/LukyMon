@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
-
+//Wooden slime
 namespace LukyMon.Enemy
 {
 	public class WoodenSlime : ModNPC
