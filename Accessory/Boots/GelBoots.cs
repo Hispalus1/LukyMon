@@ -32,7 +32,7 @@ namespace LukyMon.Accessory.Boots
             player.moveSpeed += 0.3f;
             player.accRunSpeed += 0.2f;
             player.jumpBoost = true;
-            player.GetModPlayer<WoodenSlime>().stickyShoes = true;
+            player.GetModPlayer<GlobalPlayer>().stickyShoes = true;
         }
 
 

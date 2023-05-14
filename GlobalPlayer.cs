@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LukyMon
 {
-	public class WoodenSlime : ModPlayer
+	public class GlobalPlayer : ModPlayer
 	{
 		public bool stickyShoes = false;
 
