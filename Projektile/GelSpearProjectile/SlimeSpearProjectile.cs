@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using System;
-
+//xd
 namespace LukyMon.Projektile.GelSpearProjectile
 {
     public class SlimeSpearProjectile : ModProjectile
