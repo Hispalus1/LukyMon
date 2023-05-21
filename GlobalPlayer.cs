@@ -3,6 +3,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+//global player
+
 namespace LukyMon
 {
 	public class GlobalPlayer : ModPlayer
