@@ -26,7 +26,7 @@ namespace LukyMon.Accessory.Boots
             Item.accessory = true;
         }
         
-
+//update
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
             player.moveSpeed += 0.3f;
