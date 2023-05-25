@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
+//bow
 namespace LukyMon.Items.GelBow
 {
     public class GelBow : ModItem
