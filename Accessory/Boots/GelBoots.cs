@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using LukyMon;
 
 
-//boots with little speed boost xd
+//boots with little speed boost xd hehe
 namespace LukyMon.Accessory.Boots
 {
     public class GelBoots : ModItem
