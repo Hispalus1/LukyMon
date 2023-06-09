@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-
+//ham and axe
 namespace LukyMon.Items.GelHamAxe
 {
     public class Ham : ModItem
